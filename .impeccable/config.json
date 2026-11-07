@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-11-07T21:01:50.230Z",
+        "reason": "agent triage: sections are inset by .container padding (20–32px); FAQ rows and map are hairline-ruled lists/placeholders with centered or padded content, verified in 390/1440 screenshots"
+      }
+    ]
+  }
+}
