@@ -18,8 +18,7 @@
       0: null,
       1: [8, 18], 2: [8, 18], 3: [8, 18], 4: [8, 18], 5: [8, 18],
       6: [8, 12]
-    },
-    mapEmbed: 'https://www.google.com/maps?q=Lohan+Auto+Center,+Av.+Dom+Pedro+I,+1856,+Campo+Limpo+Paulista+-+SP&output=embed'
+    }
   };
   var DAY_NAMES = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
 
@@ -306,21 +305,7 @@
     ro.observe(readout);
   }
 
-  /* ---------- 8. Mapa, FAQ, header, entradas ---------- */
-  var mapBtn = $('[data-map-load]');
-  if (mapBtn) {
-    mapBtn.addEventListener('click', function () {
-      var iframe = document.createElement('iframe');
-      iframe.src = CONFIG.mapEmbed;
-      iframe.title = 'Mapa: Lohan Auto Center na Av. Dom Pedro I, 1856';
-      iframe.loading = 'lazy';
-      iframe.referrerPolicy = 'no-referrer-when-downgrade';
-      $('[data-map]').appendChild(iframe);
-      mapBtn.remove();
-      track('rota_click', { secao: 'mapa' });
-    });
-  }
-
+  /* ---------- 8. FAQ, header, entradas ---------- */
   // FAQ: uma pergunta aberta por vez (para navegadores sem suporte a <details name>)
   var faqItems = $$('.faq details');
   faqItems.forEach(function (d) {

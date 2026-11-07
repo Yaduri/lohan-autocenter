@@ -15,7 +15,8 @@ img/              fotos reais (WebP comprimido) e logo
 
 | O que mudar | Onde |
 |---|---|
-| Número do WhatsApp, horário de funcionamento, link do mapa | `js/main.js`, bloco `CONFIG` no topo |
+| Número do WhatsApp e horário de funcionamento | `js/main.js`, bloco `CONFIG` no topo |
+| Endereço do mapa | `index.html`, `<iframe>` da seção 08 |
 | Textos | direto no `index.html` |
 | Cores, fontes, raio dos cantos | `css/styles.css`, bloco `:root` (Tokens) |
 | Marcas de pneus | `index.html`, lista `.brands` na seção 05 |
