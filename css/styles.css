@@ -848,3 +848,4 @@ fieldset { min-inline-size: 0; }
 .perks { display: grid; gap: 10px; margin-bottom: 24px; }
 .perks li { display: flex; align-items: flex-start; gap: 10px; font-weight: 600; line-height: 1.45; }
 .perks .i { color: var(--ok); margin-top: 1px; }
+.quote-hint { margin-top: 4px; font-size: .875rem; color: var(--ink-2); }
