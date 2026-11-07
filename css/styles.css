@@ -454,7 +454,7 @@ fieldset { min-inline-size: 0; }
   .services {
     grid-template-columns: repeat(3, 1fr);
   }
-  .services { grid-template-areas: "feat feat side" "bal tire side"; }
+  .services { grid-template-areas: "feat feat side" "bal bal side"; }
   .service-feature { grid-area: feat; flex-direction: row; }
   .service-feature .service-photo { flex: 1.25; display: flex; flex-direction: column; padding: 22px 0 22px 22px; }
   .service-feature .service-photo img { flex: 1; aspect-ratio: auto; height: 100%; min-height: 280px; border-radius: 14px; }
@@ -467,7 +467,6 @@ fieldset { min-inline-size: 0; }
   .service-photo-side .service-photo img { aspect-ratio: 4 / 4.2; max-width: 344px; border-radius: 14px; }
   .service-photo-side .service-photo .fig-caption { padding: 0; }
   .services > .service:nth-child(3) { grid-area: bal; }
-  .services > .service:nth-child(4) { grid-area: tire; }
 }
 
 .also {
@@ -599,9 +598,9 @@ fieldset { min-inline-size: 0; }
 .size-title { font-size: 1.0625rem; font-weight: 700; margin-bottom: 4px; }
 .size-guide > p { color: var(--ink-2); }
 .size-art { width: 100%; max-width: 360px; display: block; margin: 12px auto 4px; }
-.size-arc { fill: none; stroke: var(--ink); stroke-width: 2; }
-.size-arc.thin { stroke: var(--line-strong); stroke-width: 1.5; }
-.size-text { font-family: var(--mono); font-weight: 500; font-size: 22px; fill: var(--action); letter-spacing: .04em; }
+.size-tyre { fill: var(--gray-50); stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.size-rim { fill: none; stroke: var(--line-strong); stroke-width: 6; }
+.size-text { font-family: var(--mono); font-weight: 500; font-size: 20px; fill: var(--action); letter-spacing: .02em; }
 .size-legend { display: grid; gap: 0; margin-top: 8px; }
 .size-legend > div { display: grid; grid-template-columns: 56px 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); align-items: baseline; }
 .size-legend dt { color: var(--action); font-size: 1rem; }
@@ -753,10 +752,6 @@ fieldset { min-inline-size: 0; }
 
 /* ---------- 13. CTA final (único bloco de cor cheia) ---------- */
 .final { background: var(--gradient); color: #fff; padding-block: 80px; position: relative; overflow: hidden; }
-.final::after { /* traço do carro, como na logo */
-  content: ""; position: absolute; right: -60px; bottom: -30px; width: 520px; height: 200px; pointer-events: none;
-  border: 2px solid rgba(255, 255, 255, .22); border-bottom: 0; border-radius: 60% 70% 0 0 / 100% 100% 0 0;
-}
 .final-inner { position: relative; z-index: 1; display: grid; justify-items: start; gap: 18px; }
 .final-title { font-size: clamp(2rem, 1.3rem + 3vw, 3.5rem); line-height: 1.05; font-weight: 800; letter-spacing: -.025em; max-width: 16ch; }
 .final-text { font-size: 1.125rem; max-width: 50ch; color: #fff; }
@@ -766,7 +761,7 @@ fieldset { min-inline-size: 0; }
 @media (min-width: 1024px) { .final { padding-block: 112px; } .final-inner { padding-left: 96px; } }
 
 /* ---------- 14. Rodapé ---------- */
-.site-footer { background: var(--ink); color: #E7E5E4; padding: 56px 0 calc(24px + var(--wa-bar-h) + env(safe-area-inset-bottom)); font-size: .9375rem; }
+.site-footer { background: var(--ink); color: #E7E5E4; padding: 56px 0 calc(40px + var(--wa-bar-h) + env(safe-area-inset-bottom)); font-size: .9375rem; }
 @media (min-width: 1024px) { .site-footer { padding-bottom: 32px; } }
 .footer-grid { display: grid; gap: 32px; padding-bottom: 32px; border-bottom: 1px solid #3A3532; }
 @media (min-width: 768px) { .footer-grid { grid-template-columns: 1.3fr 1fr 1fr; } }
@@ -782,13 +777,14 @@ fieldset { min-inline-size: 0; }
 
 /* ---------- 15. WhatsApp fixo ---------- */
 .wa-bar {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  position: fixed; z-index: 50;
+  left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom));
   display: flex; align-items: center; justify-content: center; gap: 10px;
-  height: calc(var(--wa-bar-h) + env(safe-area-inset-bottom));
-  padding-bottom: env(safe-area-inset-bottom);
-  background: var(--wa); color: var(--ink); font-weight: 700; font-size: 1.0625rem;
-  box-shadow: 0 -6px 20px -8px rgba(28, 25, 23, .25);
-  transform: translateY(110%); transition: transform .35s var(--ease-out);
+  height: var(--wa-bar-h); padding: 0 20px; border-radius: 999px;
+  background: var(--wa); color: var(--ink); font-weight: 700; font-size: 1.0625rem; white-space: nowrap;
+  box-shadow: 0 10px 28px -10px rgba(28, 25, 23, .45);
+  transform: translateY(calc(100% + 24px + env(safe-area-inset-bottom)));
+  transition: transform .35s var(--ease-out);
 }
 .wa-bar .i { width: 22px; height: 22px; }
 .wa-bar.is-visible { transform: none; }
@@ -830,3 +826,25 @@ fieldset { min-inline-size: 0; }
 
 /* Prefixo "Provável:" nas tags: visível no celular, implícito pelo cabeçalho da tabela no desktop */
 @media (min-width: 900px) { .sr-prefix { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+
+/* Balanceamento ocupa a largura toda do par no tablet */
+@media (min-width: 768px) and (max-width: 1023px) { .service-wide { grid-column: 1 / -1; } }
+
+/* Prova social logo depois dos sintomas */
+.proof {
+  margin-top: 32px; padding: 20px 22px; border-radius: var(--radius);
+  background: var(--paper-warm); display: grid; gap: 8px;
+}
+.proof-score { display: inline-flex; align-items: center; gap: 10px; }
+.score-mini { font-weight: 800; font-size: 1.5rem; line-height: 1; font-stretch: var(--wide); font-variation-settings: "wdth" 116; }
+.proof blockquote p { font-size: 1.125rem; font-weight: 500; line-height: 1.45; text-wrap: pretty; }
+.proof figcaption { color: var(--ink-2); font-size: .9375rem; }
+.proof figcaption a { color: var(--ink); text-underline-offset: 4px; text-decoration-color: var(--orange); }
+@media (min-width: 900px) {
+  .proof { grid-template-columns: auto 1fr auto; align-items: center; gap: 24px; padding: 22px 28px; }
+}
+
+/* Lista de vantagens (pneus) */
+.perks { display: grid; gap: 10px; margin-bottom: 24px; }
+.perks li { display: flex; align-items: flex-start; gap: 10px; font-weight: 600; line-height: 1.45; }
+.perks .i { color: var(--ok); margin-top: 1px; }

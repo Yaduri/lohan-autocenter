@@ -110,7 +110,7 @@
     var carro = fCarro.value.trim();
     var cidade = fCidade.value;
     var servico = getServico();
-    var intro = 'Olá, Lohan! Sou ' + nome + ', tenho um ' + carro +
+    var intro = 'Olá, Lohan! ' + (nome ? 'Sou ' + nome + ', tenho um ' : 'Tenho um ') + carro +
       (cidade && cidade !== 'Outra cidade' ? ' e sou de ' + cidade : '') + '.';
 
     if (ctx.sintoma) return intro + ' Meu carro está ' + ctx.sintoma + '. Podem avaliar?';
@@ -120,7 +120,7 @@
       return intro + ' Quero cotar pneus' + (medida ? ' ' + medida : '') + '.';
     }
     if (ctx.outro && !servico) return intro + ' Gostaria de um orçamento de outro serviço.';
-    if (!servico || servico === 'avaliacao') return intro + ' Gostaria de uma avaliação do meu carro.';
+    if (!servico || servico === 'avaliacao') return intro + ' Gostaria de um orçamento grátis.';
     return intro + ' Gostaria de um orçamento de ' + servico + '.';
   }
 
@@ -129,21 +129,17 @@
     input.setAttribute('aria-invalid', show ? 'true' : 'false');
     if (err) err.hidden = !show;
   }
+  // Só "Carro e ano" é obrigatório: cada campo a menos aumenta o envio
   function validate(focusFirst) {
-    var okNome = fNome.value.trim().length > 1;
     var okCarro = fCarro.value.trim().length > 1;
-    showError(fNome, !okNome);
     showError(fCarro, !okCarro);
-    if (focusFirst) {
-      if (!okNome) fNome.focus({ preventScroll: true });
-      else if (!okCarro) fCarro.focus({ preventScroll: true });
-    }
-    return okNome && okCarro;
+    if (focusFirst && !okCarro) fCarro.focus({ preventScroll: true });
+    return okCarro;
   }
-  function isFilled() { return fNome.value.trim().length > 1 && fCarro.value.trim().length > 1; }
+  function isFilled() { return fCarro.value.trim().length > 1; }
 
   // Erro some assim que a pessoa corrige
-  [fNome, fCarro].forEach(function (input) {
+  [fCarro].forEach(function (input) {
     input.addEventListener('input', function () {
       if (input.getAttribute('aria-invalid') === 'true' && input.value.trim().length > 1) showError(input, false);
     });
@@ -158,20 +154,25 @@
     openWhatsApp(buildMessage(), ctx.secao);
     setTimeout(function () {
       submitBtn.removeAttribute('aria-busy');
-      submitLabel.textContent = 'Pedir orçamento no WhatsApp';
+      submitLabel.textContent = 'Receber meu orçamento grátis';
     }, 1600);
   });
 
-  function goToForm() {
-    var top = form.getBoundingClientRect().top + window.scrollY - (document.querySelector('.site-header').offsetHeight + 12);
-    window.scrollTo({ top: top, behavior: reduceMotion ? 'auto' : 'smooth' });
-    form.classList.remove('is-highlight');
-    void form.offsetWidth;
-    form.classList.add('is-highlight');
-    setTimeout(function () { (fNome.value.trim() ? fCarro : fNome).focus({ preventScroll: true }); }, reduceMotion ? 0 : 550);
+  // Mensagem curta para quem clica num botão sem ter preenchido a ficha:
+  // abre o WhatsApp na hora, com o assunto pronto e um espaço para o carro.
+  function quickMessage(servico) {
+    var hi = 'Olá, Lohan! ';
+    var carro = ' Meu carro é: ';
+    if (ctx.sintoma) return hi + 'Meu carro está ' + ctx.sintoma + '. Podem avaliar?' + carro;
+    if (ctx.intent === 'agendar') return hi + 'Quero agendar um alinhamento 3D.' + carro;
+    if (servico === 'Pneus') return hi + 'Quero cotar pneus. Medida (se souber): ';
+    if (servico === 'outro') return hi + 'Gostaria de um orçamento de outro serviço.' + carro;
+    if (servico) return hi + 'Gostaria de um orçamento de ' + servico + '.' + carro;
+    return hi + 'Gostaria de um orçamento grátis.' + carro;
   }
 
-  // Todos os CTAs da página (serviços, alinhamento, pneus, etapas, avaliações, CTA final, barra fixa)
+  // Todos os CTAs da página: botão com "WhatsApp" sempre abre o WhatsApp.
+  // Se a ficha do topo já tem o carro preenchido, a mensagem vai completa.
   function handleCta(el) {
     var servico = el.dataset.servico || '';
     ctx.secao = el.dataset.secao || 'cta';
@@ -179,19 +180,13 @@
     ctx.intent = el.dataset.intent || null;
     ctx.outro = servico === 'outro';
 
-    if (servico) setServico(servico);
-    if (ctx.sintoma) setContext('Meu carro está ' + ctx.sintoma);
-    else if (servico === 'outro') setContext('Outro serviço');
-    else if (!servico) setContext(null);
-    else contextBox.hidden = true;
-
-    // Se nome e carro já estão preenchidos, vai direto para o WhatsApp
-    // (Pneus sempre passa pelo formulário, para a pessoa informar a medida)
-    if (isFilled() && servico !== 'Pneus') {
+    if (isFilled()) {
+      if (servico && servico !== 'outro') setServico(servico);
       openWhatsApp(buildMessage(), ctx.secao);
-      return;
+    } else {
+      openWhatsApp(quickMessage(servico), ctx.secao);
     }
-    goToForm();
+    ctx.sintoma = null; ctx.intent = null; ctx.outro = false;
   }
   $$('[data-cta], [data-sintoma]').forEach(function (el) {
     el.addEventListener('click', function () { handleCta(el); });
@@ -226,12 +221,12 @@
 
     if (open) {
       status.classList.add('is-open');
-      text.textContent = n.day === 6 ? 'Aberto agora · hoje até as ' + h[1] + 'h' : 'Aberto agora · atendemos até as ' + h[1] + 'h';
+      text.textContent = 'Aberto agora até as ' + h[1] + 'h · respondemos em até 15 min';
       if (short) { short.textContent = '· Aberto agora'; short.classList.remove('is-closed'); }
     } else {
       var next = nextOpening(n.day, n.minutes);
       status.classList.add('is-closed');
-      text.textContent = 'Fechado agora · abrimos ' + next.label + ' às ' + next.hour + 'h. Pode mandar sua mensagem, respondemos assim que abrirmos.';
+      text.textContent = 'Fechado agora · mande sua mensagem, respondemos ' + next.label + ' às ' + next.hour + 'h';
       if (short) { short.textContent = '· Fechado agora'; short.classList.add('is-closed'); }
     }
     $$('.hours-table tr').forEach(function (tr) {
